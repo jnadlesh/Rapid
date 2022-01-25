@@ -1,6 +1,6 @@
 # Rapid
 
-Rapid bot has a music player and has some basic utility built in
+Rapid bot is a music player that has some basic utility built in
 
-For the bot to work, you will need to put in your bots token and also change the directory of the 4 paths in src/tools.py
+For the bot to work, you will need your bots unique token and you will also need to change the variables in src/tools.py to a directory on your computer.
 
