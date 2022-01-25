@@ -1,0 +1,2 @@
+# Rapid
+ discord bot 
