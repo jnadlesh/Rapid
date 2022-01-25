@@ -94,7 +94,7 @@ async def roll(ctx, type = None, *args):
                 increment += 1
             await ctx.send(embed=ce.roll_embed(d_data, ctx.author.display_name, type, arguments, d_sum))
 
-token = "NzE0OTg0MjI4ODU2NTI4OTQ3.Xs2m8w.GEYTS6LjSitZDV6pd9eql3zec4g"
+token = ""
 
 #with open("token.txt") as file:
 #    token = file.read()
