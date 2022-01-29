@@ -30,6 +30,9 @@ class music_cog(commands.Cog):
 
         self.vc = ""
 
+        self.message_id = ""
+        self.message_user = ""
+
         self.music_history_info = {"title": "", "duration": "", "thumbnail": "", "url": ""}
 
     def search_yt(self, item):
@@ -42,7 +45,7 @@ class music_cog(commands.Cog):
         self.music_history_info = {"title": info["title"], "duration": info["duration"], "thumbnail": info["thumbnail"], "url": f"https://youtube.com/watch?v={info['id']}"}
         tc = datetime.timedelta(seconds=self.music_history_info['duration'])
         self.converted_time = str(tc)
-        tools.save_data(self.music_history_info['title'],self.music_history_info['url'],self.converted_time,self.music_history_info['thumbnail'])
+        tools.save_data(self.music_history_info['title'],self.music_history_info['url'],self.converted_time,self.music_history_info['thumbnail'],self.message_id, self.message_user)
 
         return {'source': info['formats'][0]['url'], 'title': info['title']} 
 
@@ -88,12 +91,15 @@ class music_cog(commands.Cog):
             await ctx.send(embed=ce.noconnect_embed(ctx.author.display_name))
         else:
             voice_channel = ctx.author.voice.channel
+            user_info = tools.get_user(ctx)
+            self.message_id = user_info["message_id"]
+            self.message_user = user_info["user"]
             song = self.search_yt(query)
             if type(song) == type(True):
                 await ctx.send(embed=ce.play_error_embed(ctx.author.display_name))
             else:
                 self.music_queue.append([song, voice_channel])
-                print(f"\n[playing/enqueued] {self.music_history_info['title']} | {self.music_history_info['url']} | {self.converted_time} to play in {self.music_queue[0][1]}\n")
+                print(f"\n[playing/enqueued] {self.music_history_info['title']} | {self.music_history_info['url']} | {self.converted_time} to play in {self.music_queue[0][1]} requested by {self.message_id} - {self.message_user} \n")
                 await ctx.send(embed=ce.play_imbed(self.music_history_info['title'],self.music_history_info['url'],self.music_queue,self.converted_time,self.music_history_info['thumbnail'],ctx.author.display_name))
 
                 if self.is_playing == False:
@@ -185,9 +191,9 @@ class music_cog(commands.Cog):
                 for i in range(len(files)):
                     with open(f"{hdir}/{files[i]}") as f:
                         data = json.load(f)
-                        history_data = {"title": data["title"],"url": data["url"],"duration": data["duration"],"thumbnail": data["thumbnail"]}
+                        history_data = {"title": data["title"],"url": data["url"],"duration": data["duration"],"thumbnail": data["thumbnail"], "message_user": data["message_user"]}
                         i += 1
-                    h_data += f"{i}) [{history_data['title']}]({history_data['url']}) \n"
+                    h_data += f"{i}) [{history_data['title']}]({history_data['url']}) - {history_data['message_user']} \n"
             elif len(files) > song_limit:
                 h_data = ""
                 i = 0

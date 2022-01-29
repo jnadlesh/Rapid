@@ -26,8 +26,8 @@ def roll(amount):
     digit = rnd.randint(1,amount)
     return digit
 
-def save_data(title, url, duration, thumbnail):
-    history_data = {"title": title, "url": url, "duration": duration, "thumbnail": thumbnail}
+def save_data(title, url, duration, thumbnail, message_id, message_user):
+    history_data = {"title": title, "url": url, "duration": duration, "thumbnail": thumbnail, "message_id": message_id, "message_user": message_user}
     files = []
     if not os.listdir(hdir):
         with open(f"{hdir}/song{1}.json", "w") as f:
@@ -92,7 +92,11 @@ async def show_dir_info(ctx, *args):
             i += 1
         await ctx.send(embed=ce.playlist_show_music_embed(ctx.author.display_name, s_data))
 
-
-            
-
-
+def get_user(ctx):
+    message_id = ctx.author.id
+    user = ctx.author.display_name
+    user_list = {
+        "message_id": message_id,
+        "user": user
+    }
+    return user_list
