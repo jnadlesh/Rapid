@@ -206,9 +206,9 @@ class music_cog(commands.Cog):
                 for i in range(song_limit):
                     with open(f"{hdir}/{files[i]}") as f:
                         data = json.load(f)
-                        history_data = {"title": data["title"],"url": data["url"],"duration": data["duration"],"thumbnail": data["thumbnail"]}
+                        history_data = {"title": data["title"],"url": data["url"],"duration": data["duration"],"thumbnail": data["thumbnail"], "message_user": data["message_user"]}
                         i += 1
-                    h_data += f"{i}) [{history_data['title']}]({history_data['url']}) \n"
+                    h_data += f"{i}) [{history_data['title']}]({history_data['url']}) - {history_data['message_user']} \n"
             await ctx.send(embed=ce.history_embed(h_data, ctx.author.display_name))
 
         elif arguments.lower() == "clear":
