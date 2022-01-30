@@ -1,3 +1,4 @@
+import asyncio
 import customEmbeds as ce
 import datetime
 import discord
@@ -61,7 +62,7 @@ class music_cog(commands.Cog):
         else:
             self.is_playing = False
 
-    async def play_music(self):
+    async def play_music(self, ctx):
         if len(self.music_queue) > 0:
             self.is_playing = True
 
@@ -82,8 +83,14 @@ class music_cog(commands.Cog):
             self.vc.play(discord.FFmpegPCMAudio(m_url, **self.FFMPEG_OPTIONS), after=lambda e: self.play_next())
 
         else:
+            await asyncio.sleep(300)
+            if ctx.voice_client.is_playing() == True:
+                return
+            else:
+                await ctx.send("Disconnecting for inactivity")
+                await ctx.voice_client.disconnect()
             self.is_playing = False
-    
+ 
     @commands.command(name="play")
     async def play(self, ctx, *args):
         query = " ".join(args)
@@ -103,8 +110,7 @@ class music_cog(commands.Cog):
                 await ctx.send(embed=ce.play_imbed(self.music_history_info['title'],self.music_history_info['url'],self.music_queue,self.converted_time,self.music_history_info['thumbnail'],ctx.author.display_name))
 
                 if self.is_playing == False:
-                    await self.play_music()
-
+                    await self.play_music(ctx)
 
     @commands.command(name="queue")
     async def queue(self, ctx):
@@ -130,7 +136,7 @@ class music_cog(commands.Cog):
                 if len(self.music_queue) > 0:
                     self.play_next()
                 else:
-                    await self.play_music()
+                    await self.play_music(ctx)
 
     @commands.command(name="stop")
     async def stop(self, ctx):
